@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <script crossorigin src="https://unpkg.com/react@18/umd/react.development.js"></script>
+  <script crossorigin src="https://unpkg.com/react-dom@18/umd/react-dom.development.js"></script>
+  <script src="https://unpkg.com/@babel/standalone/babel.min.js"></script>
+  <title>Document</title>
+</head>
+<body>
+
+<script type="text/babel" data-presets="typescript,react">
+  /** @type {any} */
+  const globalWindow = window;
+  const { React, ReactDOM } = globalWindow;
+</script>
+
+<div id="root1"></div>
+<div id="root2"></div>
+
+<script type="text/babel">
+  //----- 1. 기본 배열 렌더링
+  {
+    /** @type {React.FC<{items: string[]}>} */
+    const ListComp = ({ items }) =>{
+      return(
+        <ul>
+          {
+            items.map((item, i) => <li key={i}>{item}</li> ) // 개중요(map은 정말정말 많이 쓴다.)
+          }
+        </ul>
+      );
+    }
+
+    /** @type {string[]} */
+    const names = ["홍명보", "이임생", "정몽규"];
+
+    ReactDOM.createRoot(document.getElementById('root1')).render(<ListComp items={names}/>);
+  }  
+
+  //----- 2. 하위 컴포넌트 분할 배열 렌더링 (실전)
+  {
+    //객체 데이터 타입 정의
+    /**
+     * @typeof {Object} UserItem
+     * @Property {Number} id
+     * @Property {string} name
+     */ 
+    
+    /** @type {React.FC<{data: UserItem}>} */
+    const ListItemComp = ({ data }) =>{
+      return <li>{data.name}</li>
+    }
+
+    /** @type {React.FC<{items: UserItem[]}>} */
+    const ListComp = ({items}) => {
+      return (
+        <ul>
+          {
+            items.map(item => <ListItemComp key={item.id} data={item} />) //실무 스타일(데이터 자체의 고유 ID를 key로 사용)
+          }
+        </ul>
+      );
+    }
+
+    /** @type {UserItem[]} */
+    const lists = [
+      {id: 1, name:'명보'},
+      {id: 2, name:'임생'}, 
+      {id: 3, name:'몽규'},
+     ];
+
+    ReactDOM.createRoot(document.getElementById('root2')).render(<ListComp items={lists}/>);
+  }  
+</script>
+
+</body>
+</html>
